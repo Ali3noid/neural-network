@@ -1,15 +1,21 @@
 package turbo;
 
-public class NeuralNetworkMath {
-    public static double sigmoid(double x) {
+import static turbo.MatrixUtil.loopThroughMatrix;
+
+class NeuralNetworkMath {
+
+    private NeuralNetworkMath() {
+    }
+
+    static double sigmoid(double x) {
         return 1 / (1 + Math.exp(-x));
     }
 
-    public static double sigmoidDerivative(double sigmoid) {
+    static double sigmoidDerivative(double sigmoid) {
         return sigmoid * (1 - sigmoid);
     }
 
-    public static double[][] matrixMultiply(double[][] a, double[][] b) {
+    static double[][] matrixMultiply(double[][] a, double[][] b) {
         if (a.length == 0 || b.length == 0 || a[0].length != b.length) {
             throw new IllegalArgumentException("Cannot multiply non n x m and m x p matrices");
         }
@@ -35,59 +41,46 @@ public class NeuralNetworkMath {
         return result;
     }
 
-    public static double[][] scalarMultiply(double[][] v1, double[][] v2) {
-        if (v1.length != v2.length) {
-            throw new IllegalArgumentException("Cannot multiply vectors of unequal length");
-        }
-        double result[][] = new double[v1.length][v1[0].length];
-        for (int i = 0; i < v1.length; ++i) {
-            for (int j = 0; j < v1[i].length; ++j) {
-                result[i][j] = v1[i][j] * v2[i][j];
-            }
-        }
-        return result;
-
-    }
-
-    public static double[][] matrixSubtract(double[][] a, double[][] b) {
-        if (a.length == 0 || b.length == 0 || a.length != b.length || a[0].length != b[0].length) {
-            throw new IllegalArgumentException("Cannot subtract unequal matrices");
-        }
-
-        double result[][] = new double[a.length][a[0].length];
-
-        for (int i = 0; i < a.length; ++i) {
-            for (int j = 0; j < a[i].length; ++j) {
-                result[i][j] = a[i][j] - b[i][j];
-            }
-        }
-
-        return result;
-    }
-
-    public static double[][] matrixAdd(double[][] a, double[][] b) {
-        if (a.length == 0 || b.length == 0 || a.length != b.length || a[0].length != b[0].length) {
-            throw new IllegalArgumentException("Cannot add unequal matrices");
-        }
-
+    static double[][] scalarMultiply(double[][] a, double[][] b) {
+        validateEqualLengthMatrices(a, b);
         double[][] result = new double[a.length][a[0].length];
-
-        for (int i = 0; i < a.length; ++i) {
-            for (int j = 0; j < a[i].length; ++j) {
-                result[i][j] = a[i][j] + b[i][j];
-            }
-        }
-
+        loopThroughMatrix(result, (i, j) -> result[i][j] = a[i][j] * b[i][j]);
         return result;
     }
 
-    public static double[][] matrixTranspose(double[][] matrix) {
+    static double[][] matrixSubtract(double[][] a, double[][] b) {
+        validateEqualSizeMatrices(a,b);
+        double[][] result = new double[a.length][a[0].length];
+        loopThroughMatrix(result, (i, j) -> result[i][j] = a[i][j] - b[i][j]);
+        return result;
+    }
+
+    static double[][] matrixAdd(double[][] a, double[][] b) {
+        validateEqualSizeMatrices(a, b);
+        double[][] result = new double[a.length][a[0].length];
+        loopThroughMatrix(result, (i, j) -> result[i][j] = a[i][j] + b[i][j]);
+        return result;
+    }
+
+    static double[][] matrixTranspose(double[][] matrix) {
         double[][] result = new double[matrix[0].length][matrix.length];
         for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; ++j) {
+            for (int j = 0; j < matrix[i].length; j++) {
                 result[j][i] = matrix[i][j];
             }
         }
         return result;
+    }
+
+    private static void validateEqualLengthMatrices(double[][] v1, double[][] v2) {
+        if (v1.length != v2.length) {
+            throw new IllegalArgumentException("Cannot multiply vectors of unequal length");
+        }
+    }
+
+    private static void validateEqualSizeMatrices(double[][] a, double[][] b) {
+        if (a.length == 0 || b.length == 0 || a.length != b.length || a[0].length != b[0].length) {
+            throw new IllegalArgumentException("Cannot perform this operation on unequal matrices");
+        }
     }
 }

@@ -3,33 +3,32 @@ package turbo;
 import lombok.Data;
 
 import static turbo.MatrixUtil.apply;
-import static turbo.NeuralNetworkMath.matrixMultiply;
-import static turbo.NeuralNetworkMath.matrixSubtract;
 import static turbo.NeuralNetworkMath.matrixTranspose;
-import static turbo.NeuralNetworkMath.scalarMultiply;
+import static turbo.matricesstrategy.Operation.getMultiplication;
+import static turbo.matricesstrategy.Operation.getScalarMultiplication;
+import static turbo.matricesstrategy.Operation.getSubtraction;
 
 @Data
-public class NeuronNetwork {
+class NeuronNetwork {
     private final NeuronLayer layer;
     private double[][] outputLayer;
 
-    public NeuronNetwork(NeuronLayer layer) {
+    NeuronNetwork(NeuronLayer layer) {
         this.layer = layer;
     }
 
-    public void think(double[][] inputs) {
-        outputLayer = apply(matrixMultiply(inputs, layer.getWeights()), layer.getActivationFunction());
+    void think(double[][] inputs) {
+        outputLayer = apply(getMultiplication().execute(inputs, layer.getWeights()), layer.getActivationFunction());
     }
 
-    public void train(double[][] inputs, double[][] outputs, int numberOfTrainingIterations) {
+    void train(double[][] inputs, double[][] outputs, int numberOfTrainingIterations) {
         for (int i = 0; i < numberOfTrainingIterations; ++i) {
 
             think(inputs);
 
-            double[][] errorLayer = matrixSubtract(outputs, outputLayer);
-            double[][] deltaLayer = scalarMultiply(errorLayer, apply(outputLayer, layer.getActivationFunctionDerivative()));
-
-            double[][] adjustmentLayer = matrixMultiply(matrixTranspose(inputs), deltaLayer);
+            double[][] errorLayer = getSubtraction().execute(outputs, outputLayer);
+            double[][] deltaLayer = getScalarMultiplication().execute(errorLayer, apply(outputLayer, layer.getActivationFunctionDerivative()));
+            double[][] adjustmentLayer = getMultiplication().execute(matrixTranspose(inputs), deltaLayer);
             this.layer.adjustWeights(adjustmentLayer);
         }
     }

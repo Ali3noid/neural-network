@@ -7,19 +7,19 @@ import java.util.function.Function;
 
 import static java.lang.Math.random;
 import static turbo.MatrixUtil.loopThroughMatrix;
-import static turbo.NeuralNetworkMath.matrixAdd;
+import static turbo.matricesstrategy.Operation.getAddition;
 
 
 @Data
 public class NeuronLayer {
 
     private double[][] weights;
-    public final Function<Double, Double> activationFunctionDerivative;
-    public final Function<Double, Double> activationFunction;
+    private final Function<Double, Double> activationFunctionDerivative;
+    private final Function<Double, Double> activationFunction;
 
     NeuronLayer(int numberOfNeurons, int numberOfInputsPerNeuron) {
         weights = new double[numberOfInputsPerNeuron][numberOfNeurons];
-        loopThroughMatrix(weights, (i, j) ->  weights[i][j] = random() - 0.5);
+        loopThroughMatrix(weights, (i, j) -> weights[i][j] = random() - 0.5);
         activationFunction = NeuralNetworkMath::sigmoid;
         activationFunctionDerivative = NeuralNetworkMath::sigmoidDerivative;
     }
@@ -30,6 +30,6 @@ public class NeuronLayer {
     }
 
     void adjustWeights(double[][] adjustment) {
-        weights = matrixAdd(weights, adjustment);
+        weights = getAddition().execute(weights, adjustment);
     }
 }

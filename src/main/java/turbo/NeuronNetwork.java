@@ -1,34 +1,30 @@
 package turbo;
 
 import lombok.Data;
-
-import static turbo.MatrixUtil.apply;
-import static turbo.NeuralNetworkMath.matrixTranspose;
-import static turbo.matricesstrategy.Operation.getMultiplication;
-import static turbo.matricesstrategy.Operation.getScalarMultiplication;
-import static turbo.matricesstrategy.Operation.getSubtraction;
+import turbo.model.Matrix2d;
 
 @Data
 class NeuronNetwork {
     private final NeuronLayer layer;
-    private double[][] outputLayer;
+    private Matrix2d outputLayer;
 
-    NeuronNetwork(NeuronLayer layer) {
+    NeuronNetwork(NeuronLayer layer, Matrix2d outputLayer) {
+        this.outputLayer = outputLayer;
         this.layer = layer;
     }
 
-    void think(double[][] inputs) {
-        outputLayer = apply(getMultiplication().execute(inputs, layer.getWeights()), layer.getActivationFunction());
+    void think(Matrix2d inputs) {
+        outputLayer = inputs.multiplyBy(layer.getWeights()).apply(layer.getActivationFunction());
     }
 
-    void train(double[][] inputs, double[][] outputs, int numberOfTrainingIterations) {
+    void train(Matrix2d inputs, Matrix2d outputs, int numberOfTrainingIterations) {
         for (int i = 0; i < numberOfTrainingIterations; ++i) {
 
             think(inputs);
 
-            double[][] errorLayer = getSubtraction().execute(outputs, outputLayer);
-            double[][] deltaLayer = getScalarMultiplication().execute(errorLayer, apply(outputLayer, layer.getActivationFunctionDerivative()));
-            double[][] adjustmentLayer = getMultiplication().execute(matrixTranspose(inputs), deltaLayer);
+            Matrix2d errorLayer = outputs.subtract(outputLayer);
+            Matrix2d deltaLayer = errorLayer.scalarMultiplyBy(outputLayer.apply(layer.getActivationFunctionDerivative()));
+            Matrix2d adjustmentLayer = inputs.transpose().multiplyBy(deltaLayer);
             this.layer.adjustWeights(adjustmentLayer);
         }
     }

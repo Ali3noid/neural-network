@@ -81,7 +81,7 @@ public class Matrix2d {
         return new Matrix2d(result);
     }
 
-    public void fillRandomValues(){
+    public void fillRandomValues() {
         loopThroughMatrix(values, (i, j) -> values[i][j] = random() - 0.5);
     }
 
@@ -110,6 +110,5 @@ public class Matrix2d {
         if (this.values.length != newValues.length || this.values[0].length != newValues[0].length) {
             throw new IllegalArgumentException("Cannot perform this operation on unequal matrices");
         }
-
     }
 }

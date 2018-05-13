@@ -1,35 +1,31 @@
 package turbo;
 
 import lombok.Data;
+import turbo.model.Matrix2d;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static java.lang.Math.random;
-import static turbo.MatrixUtil.loopThroughMatrix;
-import static turbo.matricesstrategy.Operation.getAddition;
-
-
 @Data
 public class NeuronLayer {
 
-    private double[][] weights;
+    private Matrix2d weights;
     private final Function<Double, Double> activationFunctionDerivative;
     private final Function<Double, Double> activationFunction;
 
     NeuronLayer(int numberOfNeurons, int numberOfInputsPerNeuron) {
-        weights = new double[numberOfInputsPerNeuron][numberOfNeurons];
-        loopThroughMatrix(weights, (i, j) -> weights[i][j] = random() - 0.5);
+        weights = new Matrix2d(new double[numberOfInputsPerNeuron][numberOfNeurons]);
+        weights.fillRandomValues();
         activationFunction = NeuralNetworkMath::sigmoid;
         activationFunctionDerivative = NeuralNetworkMath::sigmoidDerivative;
     }
 
     @Override
     public String toString() {
-        return "NeuronLayer(weights=" + Arrays.deepToString(this.getWeights()) + ")";
+        return "NeuronLayer(weights=" + Arrays.deepToString(this.getWeights().getValues()) + ")";
     }
 
-    void adjustWeights(double[][] adjustment) {
-        weights = getAddition().execute(weights, adjustment);
+    void adjustWeights(Matrix2d adjustment) {
+        weights = weights.add(adjustment);
     }
 }

@@ -1,58 +1,50 @@
 package turbo;
 
 import turbo.model.Matrix2d;
+import turbo.network.NetworkInput;
 import turbo.network.NeuronNetwork;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class App {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws URISyntaxException {
 
-        NeuronNetwork net = new NeuronNetwork(1, 3);
+        InputLoader loader = new InputLoader();
+        NetworkInput input = loader.read("example-input.csv");
 
-        Matrix2d inputs = new Matrix2d(new double[][]{
-                {0, 0, 1},
-                {1, 1, 1},
-                {1, 0, 1},
-                {0, 1, 1},
-        });
-
-        Matrix2d outputs = new Matrix2d(new double[][]{
-                {0},
-                {1},
-                {1},
-                {0},
-        });
+        NeuronNetwork net = new NeuronNetwork(input.getNumberOfOutputNeurons(), input.getNumberOfInputsPerNeuron());
+        Matrix2d inputs = new Matrix2d(input.getInputsToTrain());
+        Matrix2d outputs = new Matrix2d(input.getOutputsToTrain());
 
         net.train(inputs, outputs, 10000);
 
+        System.out.println("Weights:");
         System.out.println(net.getWeights());
+        System.out.println("Prediction on data:");
 
-        // 1, 0, 0
-        Matrix2d testInputs = new Matrix2d(new double[][]{{1, 0, 0}});
-        testInputs.setValues(new double[][]{{1, 0, 0}});
-        predict(testInputs, net);
-
-        // 0, 1, 0
-        testInputs.setValues(new double[][]{{0, 1, 0}});
-        predict(testInputs, net);
-
-        // 1, 1, 0
-        testInputs.setValues(new double[][]{{1, 1, 0}});
-        predict(testInputs, net);
-
-        // 0, 0, 0
-        testInputs.setValues(new double[][]{{0, 0, 0}});
-        predict(testInputs, net);
+        Matrix2d testInputs = new Matrix2d(input.getInputsToPredicate());
+        Arrays.stream(testInputs.getValues())
+                .forEach(toPredicate -> predict(new Matrix2d(toPredicate), net));
     }
 
     private static void predict(Matrix2d testInput, NeuronNetwork net) {
         net.think(testInput);
+        String input = Arrays.toString(testInput.getValues()[0]);
+        List obj = Arrays.stream(net.getOutputLayer().getValues())
+                .map(s -> Arrays.stream(s)
+                        .map(Math::round)
+                        .toArray())
+                .collect(Collectors.toList());
 
-        System.out.println("Prediction on data "
-                + testInput.getValues()[0][0] + " "
-                + testInput.getValues()[0][1] + " "
-                + testInput.getValues()[0][2] + " -> "
-                + net.getOutputLayer().getValues()[0][0] + " -> "
-                + Math.round(net.getOutputLayer().getValues()[0][0]));
-
+        String outputInfo = String.format("%s -> %s -> %s", input, Arrays.toString(net.getOutputLayer().getValues()[0]), Arrays.toString((double[]) obj.get(0)));
+        System.out.println(outputInfo);
     }
 }

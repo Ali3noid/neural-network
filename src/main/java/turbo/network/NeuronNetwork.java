@@ -12,8 +12,8 @@ public class NeuronNetwork {
     private final MatrixFunction activationFunctionDerivative;
     private final MatrixFunction activationFunction;
 
-    public NeuronNetwork(int numberOfNeurons, int numberOfInputsPerNeuron) {
-        weights = new Matrix2d(new double[numberOfInputsPerNeuron][numberOfNeurons]);
+    public NeuronNetwork(int numberOfOutputNeurons, int numberOfInputsPerNeuron) {
+        weights = new Matrix2d(new double[numberOfInputsPerNeuron][numberOfOutputNeurons]);
         weights.fillRandomValues();
         activationFunction = ActivationFunction::sigmoid;
         activationFunctionDerivative = ActivationFunction::sigmoidDerivative;

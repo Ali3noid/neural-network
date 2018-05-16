@@ -19,6 +19,15 @@ public class Matrix2d {
         values = matrix;
     }
 
+    public Matrix2d(double[] vector) {
+        if (vector.length == 0) {
+            throw new IllegalArgumentException("Cannot create zero length matrix");
+        }
+        double[][] input = new double[1][];
+        input[0] = vector;
+        values = input;
+    }
+
     public Matrix2d transpose() {
         double[][] result = new double[values[0].length][values.length];
         for (int i = 0; i < values.length; i++) {

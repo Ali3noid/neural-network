@@ -23,7 +23,7 @@ public class NeuronNetwork {
         outputLayer = inputs.multiplyBy(weights).apply(activationFunction);
     }
 
-    public void train(Matrix2d inputs, Matrix2d learnOutputs, int numberOfTrainingIterations) {
+    public void train(Matrix2d inputs, Matrix2d learnOutputs, Integer numberOfTrainingIterations) {
         this.outputLayer = learnOutputs;
         for (int i = 0; i < numberOfTrainingIterations; ++i) {
 

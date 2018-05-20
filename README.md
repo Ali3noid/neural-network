@@ -2,7 +2,9 @@
 Application that allows user to upload a file to learn the network and
 then predicate a result for other input data set. 
 
-It is a very simple implementation for neural network. Network will always contain two layers: input and output, with no hidden layers at all.
+It is a very simple implementation for neural network. Network will always contain two layers: input and output, with no hidden layers at all. 
+
+Example neural network:
 <p align="center">
   <img src="https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-network.png">
 </p>
@@ -12,7 +14,7 @@ Structure of data file is described below.
   <img src="https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-data-file.png">
 </p>
 
-Meaning of each parameter (from right to left):
+Meaning of each parameter (from left to right):
 1. number of input neurons
 2. number of output neurons
 3. number of rows with train data
@@ -20,3 +22,5 @@ Meaning of each parameter (from right to left):
 5. number of training iterations
 
 Thanks to two-layer structure, those network are able only predict, with high success rate, sets that have linearly separable patterns. Other words, problems like XOR recognition can't be solve with this approach. 
+
+Main goal of the project was get familiarize with neural network background. Because of that any specialized neural network or math libraries were not used.  

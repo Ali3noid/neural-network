@@ -3,10 +3,14 @@ Application that allows user to upload a file to learn the network and
 then predicate a result for other input data set. 
 
 It is a very simple implementation for neural network. Network will always contain two layers: input and output, with no hidden layers at all.
-![example network](https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-network.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-network.png">
+</p>
 
 Structure of data file is described below.
-![example data file](https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-data-file.png)
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Ali3noid/neural-network/images/example-data-file.png">
+</p>
 
 Meaning of each parameter (from right to left):
 1. number of input neurons

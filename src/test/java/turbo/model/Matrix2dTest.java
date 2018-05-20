@@ -87,6 +87,11 @@ public class Matrix2dTest {
         //TODO
     }
 
+    @Test
+    public void scalarMultiplyBy() {
+        //TODO
+    }
+
     private Matrix2d getFirstMatrix() {
         return new Matrix2d(new double[][]{
                 {0, 1, 2},
@@ -103,10 +108,5 @@ public class Matrix2dTest {
                 {1, 2, 3},
                 {1, 2, 3},
         });
-    }
-
-    @Test
-    public void scalarMultiplyBy() {
-        //TODO
     }
 }
